@@ -2,7 +2,7 @@ import React from "react";
 
 const App = () => (
   <div>
-    <h1>App</h1>
+    <h1>Landing page. no login</h1>
   </div>
 );
 
