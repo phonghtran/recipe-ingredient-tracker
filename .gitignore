@@ -6,13 +6,15 @@
 .pnp.js
 
 #credentials
-src/firebase/firebase.js
+/src/firebase/firebase.js
+
 
 # testing
 /coverage
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
