@@ -2,7 +2,7 @@ import * as React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-// import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from "./serviceWorker";
 
 import Firebase, { FirebaseContext } from "./firebase";
 import App from "./components/pages/App";
@@ -14,4 +14,4 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-// serviceWorker.unregister();
+serviceWorker.unregister();
