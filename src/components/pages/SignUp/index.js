@@ -36,8 +36,9 @@ class SignUpFormBase extends Component {
         this.props.firebase
           .user(authUser.user.uid)
           .set({
-            fullname,
-            email,
+            name: fullname,
+            email: email,
+            recipe: {},
           })
           .then(() => {
             this.setState({ ...INITIAL_STATE });

@@ -5,6 +5,8 @@ class AdminPage extends Component {
   constructor(props) {
     super(props);
 
+    this.dbListener = "";
+
     this.state = {
       loading: false,
       users: [],
@@ -14,24 +16,31 @@ class AdminPage extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase.users().on("value", (snapshot) => {
-      const usersObject = snapshot.val();
+    this.dbListener = this.props.firebase
+      .users()
+      .onSnapshot((querySnapshot) => {
+        let usersList = [];
 
-      console.log(usersObject);
-      const usersList = Object.keys(usersObject).map((key) => ({
-        ...usersObject[key],
-        uid: key,
-      }));
+        querySnapshot.forEach(function (doc) {
+          let obj = doc.data();
 
-      this.setState({
-        users: usersList,
-        loading: false,
+          obj = {
+            ...obj,
+            uID: doc.id,
+          };
+
+          usersList.push(obj);
+        });
+
+        this.setState({
+          users: usersList,
+          loading: false,
+        });
       });
-    });
   }
 
   componentWillUnmount() {
-    this.props.firebase.users().off();
+    this.dbListener();
   }
 
   render() {
@@ -51,19 +60,22 @@ class AdminPage extends Component {
 }
 
 const UserList = ({ users }) => (
-  <ul>
-    {users.map((user) => (
-      <li key={user.uid}>
-        <span>
-          <strong>ID:</strong> {user.uid}
-        </span>
+  <div>
+    {Object.keys(users).map((obj) => {
+      const keys = Object.keys(users[obj]);
+      const values = Object.values(users[obj]);
 
-        <span>
-          <strong>Username:</strong> {user.name}
-        </span>
-      </li>
-    ))}
-  </ul>
+      console.log(values);
+
+      const props = keys.map((prop, index) => (
+        <p key={prop}>
+          {prop}: {values[index].toString()}
+        </p>
+      ));
+
+      return props;
+    })}
+  </div>
 );
 
 export default withFirebase(AdminPage);
