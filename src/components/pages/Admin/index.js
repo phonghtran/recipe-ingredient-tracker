@@ -5,8 +5,6 @@ class AdminPage extends Component {
   constructor(props) {
     super(props);
 
-    this.dbListener = "";
-
     this.state = {
       loading: false,
       users: [],
@@ -16,57 +14,55 @@ class AdminPage extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.dbListener = this.props.firebase
-      .users()
-      .onSnapshot((querySnapshot) => {
-        let usersList = [];
+    this.listener = this.props.firebase.users().onSnapshot((querySnapshot) => {
+      let usersList = [];
 
-        querySnapshot.forEach(function (doc) {
-          const obj = doc.data();
+      querySnapshot.forEach(function (doc) {
+        const obj = doc.data();
 
-          let recipes = [];
+        let recipes = [];
 
-          if ("recipes" in obj) {
-            for (const [key, value] of Object.entries(obj.recipes)) {
-              recipes.push({
-                ...value,
-                rID: `${key}`,
-              });
-            }
+        if ("recipes" in obj) {
+          for (const [key, value] of Object.entries(obj.recipes)) {
+            recipes.push({
+              ...value,
+              rID: `${key}`,
+            });
           }
+        }
 
-          let history = [];
+        let history = [];
 
-          if ("history" in obj) {
-            for (const [key, value] of Object.entries(obj.history)) {
-              history.push({
-                ...value,
-                hID: `${key}`,
-              });
-            }
+        if ("history" in obj) {
+          for (const [key, value] of Object.entries(obj.history)) {
+            history.push({
+              ...value,
+              hID: `${key}`,
+            });
           }
+        }
 
-          const newObj = {
-            recipes: recipes,
-            history: history,
-            name: obj.name,
-            uID: doc.id,
-          };
+        const newObj = {
+          recipes: recipes,
+          history: history,
+          name: obj.name,
+          uID: doc.id,
+        };
 
-          console.log("newobj", newObj);
+        console.log("newobj", newObj);
 
-          usersList.push(newObj);
-        });
-
-        this.setState({
-          users: usersList,
-          loading: false,
-        });
+        usersList.push(newObj);
       });
+
+      this.setState({
+        users: usersList,
+        loading: false,
+      });
+    });
   }
 
   componentWillUnmount() {
-    this.dbListener();
+    this.listener();
   }
 
   render() {

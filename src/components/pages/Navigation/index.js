@@ -28,6 +28,9 @@ const NavigationAuth = () => (
       <Link to={ROUTES.ADMIN}>Admin</Link>
     </li>
     <li>
+      <Link to={ROUTES.RECIPEADD}>Recipe Add</Link>
+    </li>
+    <li>
       <SignOutButton />
     </li>
   </ul>

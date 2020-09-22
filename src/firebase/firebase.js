@@ -18,6 +18,7 @@ class Firebase {
 
     this.auth = app.auth();
     this.db = app.firestore();
+    this.custom = "phong";
   }
 
   // *** Auth API ***
@@ -39,6 +40,8 @@ class Firebase {
 
   user = (uid) => this.db.collection(`users`).doc(`${uid}`);
   users = () => this.db.collection("users");
+
+  recipes = () => this.db.collection("recipes");
 }
 
 export default Firebase;
