@@ -22,14 +22,40 @@ class AdminPage extends Component {
         let usersList = [];
 
         querySnapshot.forEach(function (doc) {
-          let obj = doc.data();
+          const obj = doc.data();
 
-          obj = {
-            ...obj,
+          let recipes = [];
+
+          if ("recipes" in obj) {
+            for (const [key, value] of Object.entries(obj.recipes)) {
+              recipes.push({
+                ...value,
+                rID: `${key}`,
+              });
+            }
+          }
+
+          let history = [];
+
+          if ("history" in obj) {
+            for (const [key, value] of Object.entries(obj.history)) {
+              history.push({
+                ...value,
+                hID: `${key}`,
+              });
+            }
+          }
+
+          const newObj = {
+            recipes: recipes,
+            history: history,
+            name: obj.name,
             uID: doc.id,
           };
 
-          usersList.push(obj);
+          console.log("newobj", newObj);
+
+          usersList.push(newObj);
         });
 
         this.setState({
@@ -59,21 +85,47 @@ class AdminPage extends Component {
   }
 }
 
+const RecipeList = ({ recipes }) => (
+  <div>
+    Recipes:
+    {Object.keys(recipes).map((obj) => {
+      return (
+        <ul>
+          <li>{recipes[obj]["name"]}</li>
+          <li>{recipes[obj]["rID"]}</li>
+        </ul>
+      );
+    })}
+  </div>
+);
+
+const HistoryList = ({ history }) => (
+  <div>
+    History:
+    {Object.keys(history).map((obj) => {
+      return (
+        <ul>
+          <li>{history[obj]["name"]}</li>
+          <li>{history[obj]["hID"]}</li>
+        </ul>
+      );
+    })}
+  </div>
+);
+
 const UserList = ({ users }) => (
   <div>
     {Object.keys(users).map((obj) => {
-      const keys = Object.keys(users[obj]);
-      const values = Object.values(users[obj]);
+      console.log("obj", obj);
 
-      console.log(values);
-
-      const props = keys.map((prop, index) => (
-        <p key={prop}>
-          {prop}: {values[index].toString()}
-        </p>
-      ));
-
-      return props;
+      return (
+        <div>
+          <p key={users[obj]["name"]}>Name: {users[obj]["name"]}</p>{" "}
+          <p key={users[obj]["uID"]}>uID: {users[obj]["uID"]}</p>
+          <RecipeList recipes={users[obj]["recipes"]} />
+          <HistoryList history={users[obj]["history"]} />
+        </div>
+      );
     })}
   </div>
 );
