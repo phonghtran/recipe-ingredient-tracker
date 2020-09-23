@@ -1,12 +1,14 @@
 import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 
 import { withFirebase } from "../../../firebase";
 import { withAuthorization } from "../../../session";
+import * as ROUTES from "../../../constants/routes";
 
 const RecipeAddPage = () => (
   <div>
     <h1>receipe add Page</h1>
-    <AddFormBase />
+    <AddForm />
   </div>
 );
 
@@ -29,32 +31,28 @@ class AddFormBase extends Component {
     const { name, ingredient, quantity, unit } = this.state;
 
     console.log(name, ingredient, quantity, unit);
-    console.log(this.props.firebase);
 
-    // const newID = this.props.firebase
-    //   .recipes()
-    //   .doc()
-    //   .catch((error) => {
-    //     this.setState({ error });
-    //   });
+    const newID = this.props.firebase.recipes().doc();
 
-    // this.props.firebase
-    //   .recipes()
-    //   .doc(newID)
-    //   .set({
-    //     name: name,
-    //     ingredients: [
-    //       {
-    //         name: ingredient,
-    //         unit: unit,
-    //         quantity: quantity,
-    //       },
-    //     ],
-    //     user: {},
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ error });
-    //   });
+    console.log(newID.id);
+
+    this.props.firebase
+      .recipes()
+      .doc(newID.id)
+      .set({
+        name: name,
+        ingredients: [
+          {
+            name: ingredient,
+            unit: unit,
+            quantity: quantity,
+          },
+        ],
+        user: {},
+      })
+      .catch((error) => {
+        this.setState({ error });
+      });
 
     event.preventDefault();
   };
@@ -107,7 +105,7 @@ class AddFormBase extends Component {
   }
 }
 
-const AddForm = withFirebase(AddFormBase);
+const AddForm = withRouter(withFirebase(AddFormBase));
 const condition = (authUser) => !!authUser;
 
 export default withAuthorization(condition)(RecipeAddPage);
