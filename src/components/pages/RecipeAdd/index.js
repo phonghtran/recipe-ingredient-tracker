@@ -59,7 +59,13 @@ class AddFormBase extends Component {
   };
 
   ingredientChange = (event, index) => {
-    console.log(event.target.name, event.target.value);
+    let ingredients = this.state.ingredients.slice();
+
+    ingredients[index][event.target.name] = event.target.value;
+
+    this.setState({ ingredients: ingredients });
+
+    console.log(this.state);
   };
 
   renderIngredient(obj, index) {
