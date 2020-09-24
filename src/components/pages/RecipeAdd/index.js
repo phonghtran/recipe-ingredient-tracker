@@ -68,6 +68,28 @@ class AddFormBase extends Component {
     console.log(this.state);
   };
 
+  ingredientAdd() {
+    let ingredients = this.state.ingredients.slice();
+
+    ingredients.push({
+      name: "",
+      quantity: "",
+      unit: "",
+    });
+
+    this.setState({ ingredients: ingredients });
+  }
+
+  ingredientRemove = (index) => {
+    let ingredients = this.state.ingredients.slice();
+
+    if (ingredients.length > 1) {
+      ingredients.splice(index, 1);
+
+      this.setState({ ingredients: ingredients });
+    }
+  };
+
   renderIngredient(obj, index) {
     console.log(obj);
     return (
@@ -78,6 +100,7 @@ class AddFormBase extends Component {
         unit={obj.unit}
         index={index}
         onChange={(event) => this.ingredientChange(event, index)}
+        onClick={() => this.ingredientRemove(index)}
       />
     );
   }
@@ -90,6 +113,7 @@ class AddFormBase extends Component {
 
     return (
       <form onSubmit={this.onSubmit}>
+        <h2>Recipe Name: </h2>
         <input
           name="name"
           value={name}
@@ -98,15 +122,19 @@ class AddFormBase extends Component {
           placeholder="Recipe name"
         />
 
+        <h2>Ingredients</h2>
         {ingredients.map((obj, index) => {
           return this.renderIngredient(obj, index);
         })}
 
-        <button type="button">Add Ingredient</button>
+        <button type="button" onClick={() => this.ingredientAdd()}>
+          Add Ingredient
+        </button>
 
-        <button type="submit">Add Recipe</button>
-
-        {error && <p>{error.message}</p>}
+        <p>
+          <button type="submit">Add Recipe</button>
+        </p>
+        <p> {error && <p>{error.message}</p>}</p>
       </form>
     );
   }
@@ -115,8 +143,6 @@ class AddFormBase extends Component {
 function NewIngredient(props) {
   return (
     <div>
-      Index: {props.index}
-      <br />
       <input
         name="name"
         value={props.name}
@@ -138,6 +164,9 @@ function NewIngredient(props) {
         type="text"
         placeholder="teaspoon"
       />
+      <button type="button" onClick={props.onClick}>
+        Remove Ingredient
+      </button>
     </div>
   );
 }
