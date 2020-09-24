@@ -36,8 +36,6 @@ class AddFormBase extends Component {
 
     const newID = this.props.firebase.recipes().doc();
 
-    console.log(newID.id);
-
     this.props.firebase
       .recipes()
       .doc(newID.id)
@@ -105,11 +103,26 @@ class AddFormBase extends Component {
     );
   }
 
+  formValidation() {
+    let isValid = false;
+
+    for (let ingredient of this.state.ingredients) {
+      for (const property in ingredient) {
+        if (ingredient[property] === "") {
+          isValid = true;
+        }
+      }
+    }
+
+    if (this.state.name === "") isValid = true;
+
+    return isValid;
+  }
+
   render() {
     const { name, ingredients, error } = this.state;
 
-    // const isInvalid = name === "";
-    // name === "" || ingredient === "" || quantity === "" || unit === "";
+    let isValid = this.formValidation();
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -132,7 +145,9 @@ class AddFormBase extends Component {
         </button>
 
         <p>
-          <button type="submit">Add Recipe</button>
+          <button type="submit" disabled={isValid}>
+            Add Recipe
+          </button>
         </p>
         <p> {error && <p>{error.message}</p>}</p>
       </form>
