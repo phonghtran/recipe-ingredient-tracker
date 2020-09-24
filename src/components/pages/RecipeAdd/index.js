@@ -14,9 +14,13 @@ const RecipeAddPage = () => (
 
 const INITIAL_STATE = {
   name: "",
-  ingredient: "",
-  quantity: "",
-  unit: "",
+  ingredients: [
+    {
+      name: "carrot",
+      quantity: "2",
+      unit: "pounds",
+    },
+  ],
   error: null,
 };
 
@@ -28,9 +32,7 @@ class AddFormBase extends Component {
   }
 
   onSubmit = (event) => {
-    const { name, ingredient, quantity, unit } = this.state;
-
-    console.log(name, ingredient, quantity, unit);
+    const { name, ingredients } = this.state;
 
     const newID = this.props.firebase.recipes().doc();
 
@@ -41,13 +43,7 @@ class AddFormBase extends Component {
       .doc(newID.id)
       .set({
         name: name,
-        ingredients: [
-          {
-            name: ingredient,
-            unit: unit,
-            quantity: quantity,
-          },
-        ],
+        ingredients: ingredients,
         user: {},
       })
       .catch((error) => {
@@ -57,12 +53,31 @@ class AddFormBase extends Component {
     event.preventDefault();
   };
 
-  onChange = (event) => {
+  changeRecipeName = (event) => {
+    console.log(this.state);
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  ingredientChange = (event, index) => {
+    console.log(event.target.name, event.target.value);
+  };
+
+  renderIngredient(obj, index) {
+    console.log(obj);
+    return (
+      <NewIngredient
+        key={index}
+        name={obj.name}
+        quantity={obj.quantity}
+        unit={obj.unit}
+        index={index}
+        onChange={(event) => this.ingredientChange(event, index)}
+      />
+    );
+  }
+
   render() {
-    const { name, ingredient, quantity, unit, error } = this.state;
+    const { name, ingredients, error } = this.state;
 
     // const isInvalid = name === "";
     // name === "" || ingredient === "" || quantity === "" || unit === "";
@@ -72,37 +87,53 @@ class AddFormBase extends Component {
         <input
           name="name"
           value={name}
-          onChange={this.onChange}
+          onChange={(event) => this.changeRecipeName(event)}
           type="text"
           placeholder="Recipe name"
         />
-        <input
-          name="ingredient"
-          value={ingredient}
-          onChange={this.onChange}
-          type="text"
-          placeholder="ingredient name"
-        />
-        <input
-          name="quantity"
-          value={quantity}
-          onChange={this.onChange}
-          type="text"
-          placeholder="1"
-        />
-        <input
-          name="unit"
-          value={unit}
-          onChange={this.onChange}
-          type="text"
-          placeholder="teaspoon"
-        />
+
+        {ingredients.map((obj, index) => {
+          return this.renderIngredient(obj, index);
+        })}
+
+        <button type="button">Add Ingredient</button>
+
         <button type="submit">Add Recipe</button>
 
         {error && <p>{error.message}</p>}
       </form>
     );
   }
+}
+
+function NewIngredient(props) {
+  return (
+    <div>
+      Index: {props.index}
+      <br />
+      <input
+        name="name"
+        value={props.name}
+        onChange={props.onChange}
+        type="text"
+        placeholder="ingredient name"
+      />
+      <input
+        name="quantity"
+        value={props.quantity}
+        onChange={props.onChange}
+        type="text"
+        placeholder="1"
+      />
+      <input
+        name="unit"
+        value={props.unit}
+        onChange={props.onChange}
+        type="text"
+        placeholder="teaspoon"
+      />
+    </div>
+  );
 }
 
 const AddForm = withRouter(withFirebase(AddFormBase));
