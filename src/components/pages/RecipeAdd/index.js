@@ -2,14 +2,21 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
 import { withFirebase } from "../../../firebase";
-import { withAuthorization } from "../../../session";
+import { AuthUserContext, withAuthorization } from "../../../session";
 import * as ROUTES from "../../../constants/routes";
 
 const RecipeAddPage = () => (
-  <div>
-    <h1>receipe add Page</h1>
-    <AddForm />
-  </div>
+  <AuthUserContext.Consumer>
+    {(authUser) => (
+      <div>
+        <h1>receipe add Page</h1>
+
+        {console.log(authUser)}
+
+        <AddForm uid={authUser.uid} username={authUser.name} />
+      </div>
+    )}
+  </AuthUserContext.Consumer>
 );
 
 const INITIAL_STATE = {
@@ -36,16 +43,56 @@ class AddFormBase extends Component {
 
     const newID = this.props.firebase.recipes().doc();
 
+    console.log(newID.id);
+    let userInfo = {};
+
+    userInfo[this.props.uid] = {
+      name: this.props.username,
+      uid: this.props.uid,
+    };
+
     this.props.firebase
       .recipes()
       .doc(newID.id)
       .set({
         name: name,
         ingredients: ingredients,
-        user: {},
+        user: userInfo,
       })
       .catch((error) => {
         this.setState({ error });
+      });
+
+    let recipeObj = {};
+
+    recipeObj[newID.id] = {
+      name: name,
+      ingredients: ingredients,
+    };
+
+    let userDoc = this.props.firebase.user(this.props.uid);
+
+    userDoc
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+
+          userData["recipes"][newID.id] = {
+            name: name,
+            ingredients: ingredients,
+          };
+
+          userDoc.update({
+            recipes: userData["recipes"],
+          });
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
       });
 
     event.preventDefault();
@@ -89,7 +136,6 @@ class AddFormBase extends Component {
   };
 
   renderIngredient(obj, index) {
-    console.log(obj);
     return (
       <NewIngredient
         key={index}
@@ -127,6 +173,7 @@ class AddFormBase extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <h2>Recipe Name: </h2>
+        {this.props.uid} {this.props.username}
         <input
           name="name"
           value={name}
@@ -134,16 +181,13 @@ class AddFormBase extends Component {
           type="text"
           placeholder="Recipe name"
         />
-
         <h2>Ingredients</h2>
         {ingredients.map((obj, index) => {
           return this.renderIngredient(obj, index);
         })}
-
         <button type="button" onClick={() => this.ingredientAdd()}>
           Add Ingredient
         </button>
-
         <p>
           <button type="submit" disabled={isValid}>
             Add Recipe

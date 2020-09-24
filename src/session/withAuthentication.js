@@ -16,9 +16,30 @@ const withAuthentication = (Component) => {
     componentDidMount() {
       this.listener = this.props.firebase.auth.onAuthStateChanged(
         (authUser) => {
-          authUser
-            ? this.setState({ authUser })
-            : this.setState({ authUser: null });
+          if (authUser) {
+            console.log("hi", authUser.uid);
+
+            this.props.firebase
+              .user(authUser.uid)
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  console.log("Document data:", doc.data());
+
+                  const userData = doc.data();
+                  authUser.name = userData.name;
+                  this.setState({ authUser });
+                } else {
+                  // doc.data() will be undefined in this case
+                  console.log("No such document!");
+                }
+              })
+              .catch(function (error) {
+                console.log("Error getting document:", error);
+              });
+          } else {
+            this.setState({ authUser: null });
+          }
         }
       );
     }
