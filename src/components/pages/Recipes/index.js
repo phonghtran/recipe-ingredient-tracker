@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import { withFirebase } from "../../../firebase";
 import { AuthUserContext, withAuthorization } from "../../../session";
-import * as ROUTES from "../../../constants/routes";
 
 const RecipeAddPage = () => (
   <AuthUserContext.Consumer>
