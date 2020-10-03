@@ -14,37 +14,31 @@ const Navigation = () => (
 );
 
 const NavigationAuth = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
+  <ul className="sticky flex flex-row shadow-lg">
+    <li className="py-4 px-3">
       <Link to={ROUTES.HOME}>Home</Link>
     </li>
-    <li>
+    <li className="py-4 px-3">
       <Link to={ROUTES.ACCOUNT}>Account</Link>
     </li>
-    <li>
+    <li className="py-4 px-3">
       <Link to={ROUTES.ADMIN}>Admin</Link>
     </li>{" "}
-    <li>
+    <li className="py-4 px-3">
       <Link to={ROUTES.RECIPES}>Recipes</Link>
     </li>
-    <li>
+    <li className="py-4 px-3">
       <Link to={ROUTES.RECIPEADD}>Recipe Add</Link>
     </li>
-    <li>
+    <li className="py-4 px-3">
       <SignOutButton />
     </li>
   </ul>
 );
 
 const NavigationNonAuth = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
+  <ul className="sticky flex flex-row shadow-lg">
+    <li className="py-4 px-3">
       <Link to={ROUTES.SIGN_IN}>Sign In</Link>
     </li>
   </ul>

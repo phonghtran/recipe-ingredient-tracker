@@ -1,8 +1,9 @@
 import React from "react";
 
 const App = () => (
-  <div>
-    <h1>Landing page. no login required. -Phong</h1>
+  <div className="lg:container lg:mx-auto">
+    <h1>Welcome to Recipe Adder</h1>
+    <p>Sign up today</p>
   </div>
 );
 

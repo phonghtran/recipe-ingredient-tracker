@@ -9,7 +9,7 @@ import { withFirebase } from "../../../firebase";
 import * as ROUTES from "../../../constants/routes";
 
 const SignInPage = () => (
-  <div>
+  <div className="lg:container lg:mx-auto">
     <h1>SignIn</h1>
     <SignInForm />
     <PasswordForgetLink />
@@ -57,21 +57,39 @@ class SignInFormBase extends Component {
 
     return (
       <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="password"
-          value={password}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <button disabled={isInvalid} type="submit">
+        <p>
+          <label for="a-signin__inputEmail" className="">
+            Email
+          </label>
+          <br />
+          <input
+            name="email"
+            id="a-signin__inputEmail"
+            value={email}
+            onChange={this.onChange}
+            type="text"
+            placeholder="Email Address"
+            className="p-1 border-2 border-gray-600 border-solid rounded"
+          />
+        </p>
+        <p>
+          <label for="a-signin__inputPassword">Password</label>
+          <br />
+          <input
+            name="password"
+            id="a-signin__inputPassword"
+            value={password}
+            onChange={this.onChange}
+            type="password"
+            placeholder="Password"
+            className="p-1 border-2 border-gray-600 border-solid rounded"
+          />
+        </p>
+        <button
+          disabled={isInvalid}
+          type="submit"
+          className="p-2 bg-blue-600 rounded"
+        >
           Sign In
         </button>
 

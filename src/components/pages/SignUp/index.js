@@ -5,7 +5,7 @@ import { withFirebase } from "../../../firebase";
 import * as ROUTES from "../../../constants/routes";
 
 const SignUpPage = () => (
-  <div>
+  <div className="lg:container lg:mx-auto">
     <h1>SignUp</h1>
     <SignUpForm />
   </div>
