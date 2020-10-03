@@ -24,3 +24,12 @@ a {
 @tailwind components;
 
 @tailwind utilities;
+
+button {
+  @apply p-2 bg-blue-600 rounded;
+}
+
+input[type="text"],
+input[type="password"] {
+  @apply p-1 border-2 border-gray-600 border-solid rounded;
+}
