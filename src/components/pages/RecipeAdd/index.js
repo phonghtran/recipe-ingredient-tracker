@@ -10,8 +10,6 @@ const RecipeAddPage = () => (
       <div>
         <h1>receipe add Page</h1>
 
-        {console.log(authUser)}
-
         <AddForm uid={authUser.uid} username={authUser.name} />
       </div>
     )}
@@ -172,7 +170,7 @@ class AddFormBase extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <h2>Recipe Name: </h2>
-        {this.props.uid} {this.props.username}
+
         <input
           name="name"
           value={name}
