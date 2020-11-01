@@ -100,6 +100,38 @@ class AddFormBase extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  quickAddParsing = (event) => {
+    const arr = event.target.value.split("\n");
+    console.log(arr);
+
+    let ingredients = this.state.ingredients.slice();
+
+    arr.forEach((e) => {
+      const rawIngredient = e.trim();
+
+      if (
+        /^[0-9]$/.test(rawIngredient.substr(0, 1)) &&
+        rawIngredient.length > 0
+      ) {
+        const regexResults = rawIngredient.match(/(.*?)\s(.*?)\s(.*)/);
+
+        ingredients.push({
+          name: regexResults[3],
+          quantity: regexResults[2],
+          unit: regexResults[1],
+        });
+      } else {
+        ingredients.push({
+          name: rawIngredient,
+          quantity: "0",
+          unit: "N/a",
+        });
+      }
+    });
+
+    this.setState({ ingredients: ingredients });
+  };
+
   ingredientChange = (event, index) => {
     let ingredients = this.state.ingredients.slice();
 
@@ -120,6 +152,18 @@ class AddFormBase extends Component {
     });
 
     this.setState({ ingredients: ingredients });
+  }
+
+  ingredientClearAll() {
+    this.setState({
+      ingredients: [
+        {
+          name: "",
+          quantity: "",
+          unit: "",
+        },
+      ],
+    });
   }
 
   ingredientRemove = (index) => {
@@ -179,12 +223,27 @@ class AddFormBase extends Component {
           placeholder="Recipe name"
         />
         <h2>Ingredients</h2>
+        <button type="button" onClick={() => this.ingredientAdd()}>
+          Add New Ingredient
+        </button>
         {ingredients.map((obj, index) => {
           return this.renderIngredient(obj, index);
         })}
-        <button type="button" onClick={() => this.ingredientAdd()}>
-          Add Ingredient
+
+        <button type="button" onClick={() => this.ingredientClearAll()}>
+          Remove All Ingredients
         </button>
+
+        <div>
+          <h2>Quick Add Ingredients</h2>
+          <p>Paste a list of ingredients</p>
+          <textarea
+            rows="20"
+            cols="60"
+            onChange={(event) => this.quickAddParsing(event)}
+          ></textarea>
+        </div>
+
         <p>
           <button type="submit" disabled={isValid}>
             Add Recipe
